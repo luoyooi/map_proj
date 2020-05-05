@@ -1,45 +1,64 @@
 <template>
-    <div class="map-container">
-      <div ref="now_map" class="map"></div>
-      <div ref="cal_map" class="map" v-show="isShow"></div>
+    <div class="container">
+      <div class="map-container">
+        <div ref="now_map" class="map" :class="{showMap: isNowShow}"></div>
+        <div ref="cal_map" class="map" :class="{showMap: isCalShow}"></div>
+      </div>
+      <div class="toggle">
+        <el-row>
+          <el-button :class="{showBtn: isNowShow}" plain @click="showNow">现存数据</el-button>
+          <el-button :class="{showBtn: isCalShow}" plain @click="showCal">累计数据</el-button>
+        </el-row>
+      </div>
+
     </div>
 </template>
 
 <script>
 import echarts from 'echarts'
 import 'echarts/map/js/china.js'
-import jsonp from 'jsonp'
 
 export default {
+  props: ['list'],
   data () {
     return {
-      isShow: false
+      isNowShow: true,
+      isCalShow: false
     }
   },
   methods: {
+    showNow () {
+      this.isNowShow = true
+      this.isCalShow = false
+    },
+    showCal () {
+      this.isNowShow = false
+      this.isCalShow = true
+    },
     showMap (container, data, type) {
       const myChart = echarts.init(container)
 
       const option = {
         title: {
-          text: '疫情地图',
+          text: '疫情动态',
           subtext: '数据来源于新浪',
-          sublink: 'https://voice.baidu.com/act/newpneumonia/newpneumonia/?from=osari_pc_1'
+          sublink: 'https://news.sina.cn/zt_d/yiqing0121'
         },
         // 视觉映射组件
         visualMap: {
           // 类型
           type: 'piecewise',
-          itemWidth: 13,
-          itemHeight: 8,
+          itemWidth: 10,
+          itemHeight: 10,
+          orient: 'horizontal',
           // 自定义分段数
           pieces: [
             { max: 0, label: '0', color: '#ffffff' },
-            { min: 1, max: 9, label: '1-9', color: '#ffe5db' },
-            { min: 10, max: 99, label: '10-99', color: '#ff9985' },
-            { min: 100, max: 999, label: '100-999', color: '#f57567' },
-            { min: 1000, max: 9999, label: '1000-9999', color: '#e64546' },
-            { min: 10000, label: '≥10000', color: '#b80909' }
+            { min: 1, max: 9, label: '1-9', color: '#fff4ef' },
+            { min: 10, max: 99, label: '10-99', color: '#ffe6da' },
+            { min: 100, max: 999, label: '100-999', color: '#fdb19b' },
+            { min: 1000, max: 9999, label: '1000-9999', color: '#de512f' },
+            { min: 10000, label: '≥10000', color: '#970a0f' }
           ],
           textStyle: {
             fontSize: 9
@@ -52,9 +71,9 @@ export default {
         series: {
           type: 'map',
           map: 'china',
-          zoom: 0.7,
+          zoom: 0.8,
           layoutCenter: ['50%', '50%'],
-          layoutSize: 500,
+          layoutSize: 400,
           label: {
             show: true,
             fontSize: 7
@@ -66,10 +85,9 @@ export default {
       myChart.setOption(option)
     }
   },
-  mounted: function () {
-    // 使用jsonp请求数据
-    jsonp('https://gwpre.sina.cn/interface/fymap2020_data.json?_=1588512211971', {}, (err, data) => {
-      if (!err) { // 请求数据成功
+  watch: {
+    list: function () {
+      if (this.list) {
         // 现存数据
         const nowData = []
 
@@ -77,7 +95,7 @@ export default {
         const calData = []
 
         // 封装数据
-        data.data.list.forEach(item => {
+        this.list.forEach(item => {
           nowData.push({ name: item.name, value: item.econNum })
           calData.push({ name: item.name, value: item.value })
         })
@@ -87,20 +105,22 @@ export default {
         // 渲染累计数据
         this.showMap(this.$refs.cal_map, calData, '累计')
       }
-    })
+    }
   }
 }
-
 </script>
 
 <style lang="less" scoped>
+  .container{
+    margin: 10px 5px;
+  }
+
   .map-container{
     position: relative;
-    margin: 0 auto;
-    width: 100%;
     height: 400px;
-    border: 1px solid black;
     box-sizing: border-box;
+    background-color: #fff;
+    border-radius: 5px 5px 0 0;
 
     div.map{
       width: 100%;
@@ -108,7 +128,25 @@ export default {
       position: absolute;
       left: 0;
       top: 0;
+      z-index: 1;
+      background-color: #fff;
     }
   }
 
+  .toggle{
+      background-color: #fff;
+      border-top: .01rem solid #ccc;
+      border-radius: 0 0 5px 5px;
+      padding: 2px 5px 5px;
+  }
+
+  .showMap{
+    z-index: 100 !important;
+  }
+
+  .showBtn{
+    border: 1px solid #4ea4fb;
+    color: #4ea4fb;
+    font-weight: bold;
+  }
 </style>

@@ -1,11 +1,11 @@
 <template>
     <header>
         <div class="banner"></div>
-        <div class="nav">
-            <a href="" v-for="item in choices" :key="item.id" @click.stop.prevent="change(item.id)" :class="{checked: item.isChecked}">
-            {{item.name}}
-            </a>
-        </div>
+        <ul class="nav">
+              <li v-for="item in choices" :key="item.id">
+                <a href="" @click.stop.prevent="change(item.id)" :class="{checked: item.isChecked}">{{item.name}}</a>
+              </li>
+        </ul>
     </header>
 </template>
 
@@ -35,31 +35,41 @@ export default {
 </script>
 
 <style lang="less" scoped>
+    header{
+      width: 100%;
+    }
     .banner{
         width: 100%;
-        height: 156.07px;
+        height: 6.24rem;
         background: url('../assets/imgs/banner.jpg') no-repeat;
-        background-size: auto 156.07px;
+        background-size: 100% 6.24rem;
+    }
+
+    .checked{
+      border-bottom: 3rem / 25 solid #4d79f3;
+      font-weight: bold;
     }
     .nav{
-        border-top: 1px solid #ccc;
-        border-bottom: 1px solid #ccc;
-        margin-bottom: 10px;
-        a{
+        margin: 0;
+        padding: 0;
+        background-color: #fff;
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: flex-start;
+        li{
+          list-style: none;
+          a{
+            display: block;
+            box-sizing: border-box;
+            text-align: center;
             text-decoration: none;
-            display: inline-block;
-            width: 56px;
-            height: 39px;
-            line-height: 39px;
-            margin: 0 15px;
-            font-size: 14px;
-            font-weight: bold;
+            margin: 0 18.6rem / 25;
+            width: 69.45rem / 25;
+            height: 48.6rem / 25;
+            line-height: 48.6rem / 25;
+            font-size: 14rem / 25;
             color: black;
-
-        }
-
-        .checked{
-            border-bottom: 3px solid #4d79f3;
+          }
         }
     }
 </style>

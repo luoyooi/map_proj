@@ -4,6 +4,7 @@
     <TotalShow :data="data"></TotalShow>
     <Map :list="data.list"></Map>
     <Analyze :data="data"></Analyze>
+    <Footer></Footer>
   </div>
 </template>
 
@@ -13,6 +14,7 @@ import Header from './components/header'
 import Map from './components/map'
 import TotalShow from './components/totalshow'
 import Analyze from './components/analyze'
+import Footer from './components/footer'
 
 export default {
   name: 'app',
@@ -21,7 +23,7 @@ export default {
       data: {}
     }
   },
-  components: { Header, Map, TotalShow, Analyze },
+  components: { Header, Map, TotalShow, Analyze, Footer },
   mounted: function () {
     // 使用jsonp请求数据
     jsonp('https://gwpre.sina.cn/interface/fymap2020_data.json?_=1588512211971', {}, (err, result) => {
